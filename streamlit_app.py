@@ -5,12 +5,17 @@ import streamlit as st
 # Streamlit app title
 st.title("Plotly Line Chart from CSV in Streamlit")
 
-# File uploader
-uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
+# Define the path to your CSV file
+data_file = "data.csv"
 
-if uploaded_file is not None:
-    # Load data
-    df = pd.read_csv(uploaded_file)
+# Attempt to load the CSV data
+try:
+    df = pd.read_csv(data_file)
+except Exception as e:
+    st.error(f"Error reading {data_file}: {e}")
+    df = None
+
+if df is not None:
     
     # Assuming the CSV has columns: 'Time', 'Series1', 'Series2', 'Series3'
     if {'Time', 'Series1', 'Series2', 'Series3'}.issubset(df.columns):
