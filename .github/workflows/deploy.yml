@@ -34,3 +34,12 @@ jobs:
       - name: Push image
         run: |
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      
+      - name: Store tag in SSM
+        uses: joshghent/aws-ssm-parameter-store@v2
+        with:
+          ssm-path: "/ez-harbor/graph-image"
+          ssm-value: $IMAGE_TAG
+          ssm-value-description: "Tag to latest graph container" 
+          aws-region: ${{ secrets.AWS_REGION }}
+          ssm-value-type: "String"         
