@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-      ECR_REPOSITORY: my-streamlit-app
+      ECR_REPOSITORY: chemistry-graph
       IMAGE_TAG: ${{ github.sha }}
     steps:
       - name: Checkout source code
@@ -26,8 +26,11 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push Docker image
+      - name: Build and tag Docker image
         run: |
           docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
           docker tag $ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          
+      - name: Push image
+        run: |
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
