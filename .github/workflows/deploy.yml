@@ -39,7 +39,7 @@ jobs:
         run: |
           aws ssm put-parameter \
             --name "/ez-harbor/graph-image" \
-            --type: "String" \
+            --type "String" \
             --value "$IMAGE_TAG" \
             --description "Tag to latest graph container"
               
