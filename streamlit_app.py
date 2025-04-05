@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 
 # Streamlit app title
-st.title("Plotly Line Chart from CSV in Streamlit")
+st.title("Plotly Line Chart")
 
 # Define the path to your CSV file
 data_file = "data.csv"
