@@ -42,5 +42,5 @@ jobs:
             --type "String" \
             --value "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
             --description "Tag to latest graph container" \
-            --overwrite "True"
+            --overwrite
               
