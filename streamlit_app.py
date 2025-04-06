@@ -1,43 +1,93 @@
 import plotly.graph_objects as go
 import pandas as pd
 import streamlit as st
+import requests
+import os
 
 # Streamlit app title
-st.title("Plotly Line Chart")
+st.title("Water Chemistry Data Plot")
 
-# Define the path to your CSV file
-data_file = "data.csv"
+# Get the API URL from the environment variable
+data_url = os.getenv("READINGS_API")
 
-# Attempt to load the CSV data
-try:
-    df = pd.read_csv(data_file)
-except Exception as e:
-    st.error(f"Error reading {data_file}: {e}")
+# Attempt to fetch the JSON data from the URL
+if data_url:
+    try:
+        response = requests.get(data_url)
+        response.raise_for_status()  # Check for HTTP errors
+        data = response.json()
+        readings = data["readings"]
+
+        # Convert the JSON data into a Pandas DataFrame
+        df = pd.DataFrame(readings)
+        
+        # Convert 'testDate' to a datetime format for plotting
+        df['testDate'] = pd.to_datetime(df['testDate'])
+
+    except requests.exceptions.RequestException as e:
+        # If the API call fails, show a message on the chart
+        df = None
+        error_message = f"Error fetching data from the API: {e}"
+else:
+    # If the environment variable is not set, show a message on the chart
     df = None
+    error_message = "READINGS_API environment variable not set or API unreachable."
 
 if df is not None:
-    
-    # Assuming the CSV has columns: 'Time', 'Series1', 'Series2', 'Series3'
-    if {'Time', 'Series1', 'Series2', 'Series3'}.issubset(df.columns):
-        # Create figure
-        fig = go.Figure()
-        
-        # Add traces
-        fig.add_trace(go.Scatter(x=df['Time'], y=df['Series1'], mode='lines', name='Series1'))
-        fig.add_trace(go.Scatter(x=df['Time'], y=df['Series2'], mode='lines', name='Series2'))
-        fig.add_trace(go.Scatter(x=df['Time'], y=df['Series3'], mode='lines', name='Series3'))
-        
-        # Customize layout
-        fig.update_layout(
-            title='Multiple Line Series Plot from CSV',
-            xaxis_title='Time',
-            yaxis_title='Value',
-            template='plotly_dark',
-            dragmode='pan',  # Enables panning
-            xaxis=dict(rangeslider=dict(visible=True)),  # Enables zooming with range slider
-        )
-        
-        # Display figure
-        st.plotly_chart(fig, use_container_width=True)
-    else:
-        st.error("CSV file must contain 'Time', 'Series1', 'Series2', and 'Series3' columns.")
+    # Create a single Plotly figure for all the lines (Chlorine, pH, Acid Demand, Total Alkalinity)
+    fig = go.Figure()
+
+    # Add Chlorine trace
+    fig.add_trace(go.Scatter(x=df['testDate'], y=df['chlorine'], mode='lines+markers', name='Chlorine'))
+
+    # Add pH trace
+    fig.add_trace(go.Scatter(x=df['testDate'], y=df['ph'], mode='lines+markers', name='pH'))
+
+    # Add Acid Demand trace
+    fig.add_trace(go.Scatter(x=df['testDate'], y=df['acidDemand'], mode='lines+markers', name='Acid Demand'))
+
+    # Add Total Alkalinity trace
+    fig.add_trace(go.Scatter(x=df['testDate'], y=df['totalAlkalinity'], mode='lines+markers', name='Total Alkalinity'))
+
+    # Update layout of the plot with interactivity features
+    fig.update_layout(
+        title='Water Chemistry Levels Over Time',
+        xaxis_title='Date',
+        yaxis_title='Value',
+        legend_title='Chemistry Types',
+        template='plotly_dark',  # Optional: You can use a template like 'plotly_dark' for styling
+        dragmode='pan',  # Enables panning
+        xaxis=dict(
+            rangeslider=dict(visible=True),  # Enables zooming with range slider
+            showspikes=True  # Adds spikes when hovering over the chart
+        ),
+        yaxis=dict(
+            showspikes=True  # Adds spikes when hovering over the chart
+        ),
+        hovermode='closest'  # Ensures hover displays information close to the cursor
+    )
+
+    # Display the figure
+    st.plotly_chart(fig)
+else:
+    # If data is unavailable, display an error message on the chart
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=[0], y=[0],
+        mode='text',
+        text=[error_message],
+        textposition='middle center',
+        showlegend=False
+    ))
+
+    # Update layout to show error message prominently
+    fig.update_layout(
+        title="Error Fetching Data",
+        xaxis=dict(showgrid=False, zeroline=False, visible=False),
+        yaxis=dict(showgrid=False, zeroline=False, visible=False),
+        template='plotly_dark'
+    )
+
+    # Display the error figure
+    st.plotly_chart(fig)
