@@ -16,19 +16,11 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Inject custom CSS to hide the Streamlit options menu
+# Inject custom CSS for the header
 st.markdown("""
     <style>
-        /* Hide the Streamlit hamburger menu in the top right */
-        .css-1v3fvcr {
-            display: none !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-# Inject custom CSS to remove extra white space
-st.markdown("""
-    <style>
+        /* Change the Streamlit header top border color */
+  
         /* Remove the default top padding/margin */
         .block-container {
             padding-top: 2rem !important;
