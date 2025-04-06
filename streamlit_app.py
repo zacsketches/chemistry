@@ -4,6 +4,22 @@ import streamlit as st
 import requests
 import os
 
+# Inject custom CSS to remove extra white space
+st.markdown("""
+    <style>
+        /* Remove the default top padding/margin */
+        .block-container {
+            padding-top: 0rem !important;
+            padding-bottom: 1rem !important;
+        }
+
+        /* Optional: Adjust header style to remove unnecessary space */
+        .css-1v3fvcr {
+            margin-top: 0rem !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # Streamlit app title (with custom font size)
 st.markdown("<h3 style='text-align: left; color: black;'>Water Chemistry</h3>", unsafe_allow_html=True)
 
