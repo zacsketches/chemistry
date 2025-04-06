@@ -49,6 +49,8 @@ if df is not None:
     # Update layout of the plot with interactivity features and compact design
     fig.update_layout(
         title='Water Chemistry Levels Over Time',
+        title_x=0.5,  # Center the title
+        title_y=0.97,  # Adjust the title's vertical position
         xaxis_title='Date',
         yaxis_title='Value',
         legend_title='Chemistry Types',
@@ -62,7 +64,7 @@ if df is not None:
             showspikes=True  # Adds spikes when hovering over the chart
         ),
         hovermode='closest',  # Ensures hover displays information close to the cursor
-        margin=dict(l=40, r=40, t=40, b=40),  # Reduced margins for a more compact chart
+        margin=dict(l=40, r=40, t=60, b=40),  # Reduced margins for a more compact chart
         font=dict(
             size=10  # Smaller font size for axis labels, title, and legend
         ),
