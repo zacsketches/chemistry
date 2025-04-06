@@ -4,6 +4,9 @@ import streamlit as st
 import requests
 import os
 
+# Streamlit app title (with custom font size)
+st.markdown("<h3 style='text-align: left; color: black;'>Water Chemistry</h3>", unsafe_allow_html=True)
+
 # Get the API URL from the environment variable
 data_url = os.getenv("READINGS_API")
 
@@ -48,13 +51,10 @@ if df is not None:
 
     # Update layout of the plot with interactivity features and compact design
     fig.update_layout(
-        title='Water Chemistry Levels Over Time',
-        title_x=0.5,  # Center the title
-        title_y=0.97,  # Adjust the title's vertical position
         xaxis_title='Date',
         yaxis_title='Value',
         legend_title='Chemistry Types',
-        template='plotly_dark',  # Optional: You can use a template like 'plotly_dark' for styling
+        template='plotly_dark',
         dragmode='pan',  # Enables panning
         xaxis=dict(
             rangeslider=dict(visible=True),  # Enables zooming with range slider
@@ -64,7 +64,7 @@ if df is not None:
             showspikes=True  # Adds spikes when hovering over the chart
         ),
         hovermode='closest',  # Ensures hover displays information close to the cursor
-        margin=dict(l=40, r=40, t=60, b=40),  # Reduced margins for a more compact chart
+        margin=dict(l=40, r=40, t=40, b=40),  # Reduced margins for a more compact chart
         font=dict(
             size=10  # Smaller font size for axis labels, title, and legend
         ),
@@ -93,7 +93,6 @@ else:
 
     # Update layout to show error message prominently
     fig.update_layout(
-        title="Error Fetching Data",
         xaxis=dict(showgrid=False, zeroline=False, visible=False),
         yaxis=dict(showgrid=False, zeroline=False, visible=False),
         template='plotly_dark',
