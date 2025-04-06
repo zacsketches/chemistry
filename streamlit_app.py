@@ -4,9 +4,6 @@ import streamlit as st
 import requests
 import os
 
-# Streamlit app title
-st.title("Water Chemistry Data Plot")
-
 # Get the API URL from the environment variable
 data_url = os.getenv("READINGS_API")
 
@@ -49,7 +46,7 @@ if df is not None:
     # Add Total Alkalinity trace
     fig.add_trace(go.Scatter(x=df['testDate'], y=df['totalAlkalinity'], mode='lines+markers', name='Total Alkalinity'))
 
-    # Update layout of the plot with interactivity features
+    # Update layout of the plot with interactivity features and compact design
     fig.update_layout(
         title='Water Chemistry Levels Over Time',
         xaxis_title='Date',
@@ -64,7 +61,18 @@ if df is not None:
         yaxis=dict(
             showspikes=True  # Adds spikes when hovering over the chart
         ),
-        hovermode='closest'  # Ensures hover displays information close to the cursor
+        hovermode='closest',  # Ensures hover displays information close to the cursor
+        margin=dict(l=40, r=40, t=40, b=40),  # Reduced margins for a more compact chart
+        font=dict(
+            size=10  # Smaller font size for axis labels, title, and legend
+        ),
+        legend=dict(
+            orientation='h',  # Horizontally align the legend
+            yanchor='bottom', 
+            y=1.02,  # Place the legend just above the plot
+            xanchor='center', 
+            x=0.5
+        )
     )
 
     # Display the figure
@@ -86,7 +94,8 @@ else:
         title="Error Fetching Data",
         xaxis=dict(showgrid=False, zeroline=False, visible=False),
         yaxis=dict(showgrid=False, zeroline=False, visible=False),
-        template='plotly_dark'
+        template='plotly_dark',
+        margin=dict(l=40, r=40, t=40, b=40),  # Reduced margins
     )
 
     # Display the error figure
