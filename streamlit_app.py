@@ -4,12 +4,24 @@ import streamlit as st
 import requests
 import os
 
+# Inject custom CSS to move the Plotly chart controls to the bottom
+st.markdown("""
+    <style>
+        /* Move the modebar (zoom, fullscreen, etc.) to the bottom */
+        .plotly .modebar-container {
+            position: absolute !important;
+            bottom: 10px !important;
+            top: auto !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # Inject custom CSS to remove extra white space
 st.markdown("""
     <style>
         /* Remove the default top padding/margin */
         .block-container {
-            padding-top: 0rem !important;
+            padding-top: 2rem !important;
             padding-bottom: 1rem !important;
         }
 
@@ -21,7 +33,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Streamlit app title (with custom font size)
-st.markdown("<h3 style='text-align: left; color: black;'>Water Chemistry</h3>", unsafe_allow_html=True)
+# st.markdown("<h3 style='text-align: left; color: black;'>Water Chemistry</h3>", unsafe_allow_html=True)
 
 # Get the API URL from the environment variable
 data_url = os.getenv("READINGS_API")
@@ -54,22 +66,21 @@ if df is not None:
     fig = go.Figure()
 
     # Add Chlorine trace
-    fig.add_trace(go.Scatter(x=df['testDate'], y=df['chlorine'], mode='lines+markers', name='Chlorine'))
+    fig.add_trace(go.Scatter(x=df['testDate'], y=df['chlorine'], mode='lines', name='Chlorine'))
 
     # Add pH trace
-    fig.add_trace(go.Scatter(x=df['testDate'], y=df['ph'], mode='lines+markers', name='pH'))
+    fig.add_trace(go.Scatter(x=df['testDate'], y=df['ph'], mode='lines', name='pH'))
 
     # Add Acid Demand trace
-    fig.add_trace(go.Scatter(x=df['testDate'], y=df['acidDemand'], mode='lines+markers', name='Acid Demand'))
+    fig.add_trace(go.Scatter(x=df['testDate'], y=df['acidDemand'], mode='lines', name='Acid Demand'))
 
     # Add Total Alkalinity trace
-    fig.add_trace(go.Scatter(x=df['testDate'], y=df['totalAlkalinity'], mode='lines+markers', name='Total Alkalinity'))
+    fig.add_trace(go.Scatter(x=df['testDate'], y=df['totalAlkalinity'], mode='lines', name='Total Alkalinity'))
 
     # Update layout of the plot with interactivity features and compact design
     fig.update_layout(
         xaxis_title='Date',
         yaxis_title='Value',
-        legend_title='Chemistry Types',
         template='plotly_dark',
         dragmode='pan',  # Enables panning
         xaxis=dict(
